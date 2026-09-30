@@ -14,13 +14,13 @@ class AppConfig {
   
   // ElevenLabs API
   static const String elevenLabsBaseUrl = 'https://api.elevenlabs.io/v1';
-  static const String defaultModelId = 'eleven_multilingual_v2';
+  static const String defaultModelId = 'eleven_turbo_v2_5';
   
   // Available models (documented, not hardcoded voice IDs)
   static const List<String> availableModels = [
-    'eleven_multilingual_v2',
     'eleven_turbo_v2_5',
     'eleven_flash_v2_5',
+    'eleven_multilingual_v2',
   ];
   
   // Text limits
@@ -29,6 +29,9 @@ class AppConfig {
   
   // Audio
   static const int audioSampleRate = 44100;
+  
+  // Default voice (Sarah - works with free plan)
+  static const String defaultVoiceId = 'EXAVITQu4vr4xnSDxMaL';
   
   // UI
   static const double defaultPadding = 16.0;
