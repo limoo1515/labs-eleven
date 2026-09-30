@@ -31,6 +31,7 @@ jobs:
           cp pubspec.yaml.bak pubspec.yaml
           cp -r lib.bak/. lib/
           cp -r ios/Runner.bak/. ios/Runner/
+          rm -f ios/Runner.xcodeproj/project.pbxproj.bak
 
       - name: Deps
         run: |
@@ -101,6 +102,7 @@ jobs:
           cp android/app/build.gradle.bak android/app/build.gradle
           cp android/build.gradle.bak android/build.gradle
           cp android/settings.gradle.bak android/settings.gradle
+          rm -f android/settings.gradle.kts
 
       - name: Deps
         run: |
