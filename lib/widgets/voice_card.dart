@@ -58,7 +58,7 @@ class _VoiceCardState extends State<VoiceCard> {
   Widget build(BuildContext context) {
     return Card(
       color: widget.isSelected
-          ? Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3)
+          ? Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3)
           : Theme.of(context).cardColor,
       elevation: widget.isSelected ? 4 : 1,
       shape: RoundedRectangleBorder(
@@ -161,7 +161,7 @@ class _VoiceCardState extends State<VoiceCard> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(

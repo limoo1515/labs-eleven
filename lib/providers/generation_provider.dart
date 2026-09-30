@@ -67,6 +67,11 @@ class GenerationProvider extends ChangeNotifier {
     required String text,
     required Voice voice,
   }) async {
+    // Prevent concurrent generations
+    if (_isGenerating) {
+      return null;
+    }
+
     if (text.trim().isEmpty) {
       _error = 'Le texte est vide. Écrivez du texte pour générer la voix.';
       notifyListeners();
@@ -129,14 +134,18 @@ class GenerationProvider extends ChangeNotifier {
 
   /// Delete a generation from history.
   Future<void> deleteGeneration(String generationId) async {
-    final generation = _history.firstWhere(
-      (g) => g.id == generationId,
-      orElse: () => throw Exception('Generation not found'),
-    );
+    final index = _history.indexWhere((g) => g.id == generationId);
+    if (index == -1) return;
+
+    final generation = _history[index];
 
     // Delete audio file if exists
     if (generation.audioFilePath != null) {
-      await _storageService.deleteAudioFile(generation.audioFilePath!);
+      try {
+        await _storageService.deleteAudioFile(generation.audioFilePath!);
+      } catch (_) {
+        // Ignore file deletion errors
+      }
     }
 
     await _storageService.removeFromHistory(generationId);

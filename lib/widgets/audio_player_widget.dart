@@ -21,7 +21,7 @@ class AudioPlayerWidget extends StatefulWidget {
   State<AudioPlayerWidget> createState() => _AudioPlayerWidgetState();
 }
 
-class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
+class _AudioPlayerWidgetState extends State<AudioPlayerWidget> with WidgetsBindingObserver {
   final AudioService _audioService = AudioService();
   bool _isLoading = false;
   double _volume = 1.0;
@@ -29,6 +29,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _audioService.playerStateStream.listen((state) {
       if (state.processingState == ProcessingState.completed) {
         widget.onPlayComplete?.call();
@@ -40,11 +41,26 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+      // Pause audio when app goes to background
+      _audioService.pause();
+    }
+  }
+
+  @override
   void didUpdateWidget(AudioPlayerWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.audioPath != oldWidget.audioPath && widget.audioPath != null) {
       _loadAudio();
     }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _audioService.dispose();
+    super.dispose();
   }
 
   Future<void> _loadAudio() async {
@@ -65,12 +81,6 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
-  }
-
-  @override
-  void dispose() {
-    _audioService.dispose();
-    super.dispose();
   }
 
   String _formatDuration(Duration duration) {
